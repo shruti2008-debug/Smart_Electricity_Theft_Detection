@@ -1,0 +1,68 @@
+# ── Dependencies ──────────────────────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+
+# ── Build outputs ─────────────────────────────────────────────────────────────
+dist/
+dist-ssr/
+build/
+
+# ── Environment / Secrets  ────────────────────────────────────────────────────
+# IMPORTANT: Never commit Firebase credentials or any API keys
+.env
+.env*
+.env.local
+.env.*.local
+.env.development
+.env.production
+*.env
+dashboard/.env*
+dashboard/.env.local
+*.pem
+*.key
+*serviceAccountKey*.json
+*service-account*.json
+
+# ── Firebase ──────────────────────────────────────────────────────────────────
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+functions/node_modules/
+functions/lib/
+
+# ── ML / Python ───────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+.venv/
+venv/
+env/
+*.h5
+*.pkl
+*.joblib
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ── OS / Editor ───────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.suo
+*.user
+.vscode/settings.json
+.idea/
+
+# ── TypeScript ────────────────────────────────────────────────────────────────
+*.tsbuildinfo

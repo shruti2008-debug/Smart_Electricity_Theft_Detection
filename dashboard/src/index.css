@@ -1,0 +1,38 @@
+/* ── Reset & CSS Variables ─────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg-primary:    #0b0f1a;
+  --bg-secondary:  #111827;
+  --bg-card:       #1a2035;
+  --bg-card-hover: #1f2847;
+  --border:        #2a3355;
+  --text-primary:  #e2e8f0;
+  --text-secondary:#94a3b8;
+  --text-muted:    #64748b;
+  --accent:        #3b82f6;
+  --accent-glow:   rgba(59, 130, 246, 0.15);
+  --success:       #22c55e;
+  --success-glow:  rgba(34, 197, 94, 0.15);
+  --warning:       #f59e0b;
+  --danger:        #ef4444;
+  --font:          'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
