@@ -17,9 +17,16 @@
 
 import { initializeApp, FirebaseApp } from 'firebase/app'
 import { getAuth, Auth } from 'firebase/auth'
+import { getDatabase, Database } from 'firebase/database'
 
 // ── Firebase project configuration ────────────────────────────────────────────
 // Values injected at build-time by Vite from dashboard/.env.local
+const defaultRtdbUrl =
+  'https://electricity-theft-detect-cae09-default-rtdb.asia-southeast1.firebasedatabase.app'
+
+const rtdbUrl =
+  (import.meta.env.VITE_FIREBASE_DATABASE_URL as string) || defaultRtdbUrl
+
 const firebaseConfig = {
   apiKey:            import.meta.env.VITE_FIREBASE_API_KEY             as string,
   authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN         as string,
@@ -27,12 +34,13 @@ const firebaseConfig = {
   storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET      as string,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID as string,
   appId:             import.meta.env.VITE_FIREBASE_APP_ID              as string,
+  databaseURL:       rtdbUrl,
 }
 
 // ── Guard: fail fast in development if any env var is missing ─────────────────
 if (import.meta.env.DEV) {
   const missing = Object.entries(firebaseConfig)
-    .filter(([, v]) => !v)
+    .filter(([k, v]) => !v && k !== 'databaseURL')
     .map(([k]) => `VITE_${k.replace(/([A-Z])/g, '_$1').toUpperCase()}`)
 
   if (missing.length > 0) {
@@ -46,7 +54,8 @@ if (import.meta.env.DEV) {
 // ── Initialise Firebase services ──────────────────────────────────────────────
 const app: FirebaseApp = initializeApp(firebaseConfig)
 const auth: Auth = getAuth(app)
+const db: Database = getDatabase(app, rtdbUrl)
 
 // ── Exports ───────────────────────────────────────────────────────────────────
-export { app, auth }
+export { app, auth, db }
 export default app

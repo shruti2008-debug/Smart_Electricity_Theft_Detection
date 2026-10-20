@@ -1,0 +1,47 @@
+{
+  "rules": {
+    "system_test": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "devices": {
+      ".read": "auth != null",
+      "$deviceId": {
+        ".write": "auth != null && (!data.exists() || data.child('ownerUid').val() === auth.uid || newData.child('ownerUid').val() === auth.uid)",
+        ".validate": "newData.hasChildren(['deviceId', 'name'])"
+      }
+    },
+    "readings": {
+      "$deviceId": {
+        ".read": "auth != null",
+        "$readingId": {
+          ".write": "auth != null",
+          ".validate": "newData.hasChildren(['deviceId', 'timestamp', 'voltage', 'current', 'power']) && newData.child('voltage').isNumber() && newData.child('current').isNumber() && newData.child('power').isNumber()"
+        }
+      }
+    },
+    "latest_readings": {
+      "$deviceId": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".validate": "newData.hasChildren(['deviceId', 'timestamp', 'voltage', 'current', 'power'])"
+      }
+    },
+    "alerts": {
+      "$deviceId": {
+        ".read": "auth != null",
+        "$alertId": {
+          ".write": "auth != null",
+          ".validate": "newData.hasChildren(['alertId', 'deviceId', 'timestamp', 'severity', 'message'])"
+        }
+      }
+    },
+    "control": {
+      "$deviceId": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".validate": "newData.hasChildren(['relayCommand', 'requestedAt'])"
+      }
+    }
+  }
+}

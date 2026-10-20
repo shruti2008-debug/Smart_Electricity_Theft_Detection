@@ -19,10 +19,15 @@ build/
 *.env
 dashboard/.env*
 dashboard/.env.local
+!dashboard/.env.example
 *.pem
 *.key
 *serviceAccountKey*.json
 *service-account*.json
+
+# ── Firmware / Hardware Credentials ───────────────────────────────────────────
+firmware/**/config.h
+!firmware/**/config.h.example
 
 # ── Firebase ──────────────────────────────────────────────────────────────────
 .firebase/

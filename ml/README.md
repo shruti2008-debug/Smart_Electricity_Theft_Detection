@@ -1,49 +1,66 @@
-# ml/
+# AI / Machine Learning Anomaly Detection Module
+**Module:** `ml/`  
+**Project:** Smart Electricity Theft Detection
 
-This folder is reserved for the **AI/ML Anomaly Detection** module of Smart Electricity Theft Detection.
+The AI/ML module identifies non-technical losses, meter tampering, unauthorized load spikes, and equipment anomalies from electrical smart meter time-series data.
 
-## Purpose
+---
 
-This module uses machine learning to identify abnormal electricity consumption patterns that may indicate theft, tampering, or meter bypass.
+## 1. Architecture & Detection Methodology
 
-## Planned Pipeline
+The engine utilizes a hybrid approach:
+1. **Machine Learning Layer:**
+   - Evaluates multi-dimensional consumption vectors: `voltage`, `current`, `power`, `power_factor`, `apparent_power`, and `hour_of_day`.
+   - Normalizes feature distances to a calibrated **0.0 to 100.0 Anomaly Risk Score**.
+2. **Electrical Domain Rules Layer:**
+   - **Meter Bypass Detection:** Normal AC voltage ($>210\text{V}$) accompanied by negligible trickle current ($<0.28\text{A}$) flags immediate tampering.
+   - **Off-Peak Night Surge:** Industrial-scale loads ($>20\text{A}$) during off-peak hours ($1\text{AM} - 5\text{AM}$) flag unauthorized industrial/commercial tapping.
+   - **Line Tapping & Power Factor Distortion:** Undervoltage combined with low power factor ($<0.72$) flags unauthorized line hooks.
+   - **Sensor & Transducer Faults:** Zero voltage or implausibly high current out of physical limits flags hardware failure.
 
-1. **Data Preparation**
-   - Fetch historical sensor readings from Firebase
-   - Clean, normalize, and feature-engineer the time-series data
-   - Label normal vs. anomalous periods
+### Risk Score Calibration
+| Score Range | Risk Level | Status | Action |
+|---|---|---|---|
+| **0 – 30** | `LOW` | `NORMAL` | Normal domestic baseline. No alert generated. |
+| **31 – 65** | `MEDIUM` | `SUSPICIOUS` | Minor deviation. Monitored for persistence. |
+| **66 – 100** | `HIGH` | `TAMPERED` / `FAULT` | Dispatches priority alert to dashboard with cooldown. |
 
-2. **Model Training**
-   - Train anomaly detection models (e.g., Isolation Forest, Autoencoder, LSTM)
-   - Evaluate precision, recall, and F1-score on test data
-   - Export trained model for inference
+> **Important Caveat:** An anomaly score represents a statistical or physical deviation from nominal patterns; it is an investigative indicator, not conclusive legal proof of theft.
 
-3. **Prediction & Inference**
-   - Score incoming readings in real time or in batch
-   - Output anomaly probability / risk score per reading
+---
 
-4. **Risk Scoring**
-   - Assign LOW / MEDIUM / HIGH theft risk labels
-   - Trigger Firebase alerts when risk exceeds threshold
+## 2. Benchmark Dataset & Evaluation Results
 
-## Planned Stack
+Trained on a 14-day synthetic benchmark dataset (4,032 samples at 5-minute intervals) with an 8.0% contamination rate of calibrated theft events.
 
-- **Language:** Python 3
-- **Libraries:** scikit-learn, TensorFlow / PyTorch, pandas, numpy
-- **Data Source:** Firebase Realtime Database / Firestore
-- **Model Export:** ONNX / TensorFlow Lite (for potential on-device inference)
+### Evaluation Metrics (Evaluated on Unseen Test Split):
+- **Accuracy:** `98.14%`
+- **Precision (Anomaly):** `89.83%`
+- **Recall (Anomaly):** `85.48%`
+- **F1-Score (Anomaly):** `87.60%`
+- **Confusion Matrix:** 739 True Negatives, 6 False Positives, 9 False Negatives, 53 True Positives
 
-## Planned Folder Layout
+---
 
+## 3. Windows PowerShell Commands
+
+### Run Unit Tests
+```powershell
+cd C:\Users\shrut\OneDrive\Desktop\CP\Smart-Energy-Theft-Detection\ml
+python test_ml.py
 ```
-ml/
-├── data/           # Raw and processed datasets
-├── notebooks/      # Exploratory data analysis (Jupyter)
-├── models/         # Trained model files
-├── src/            # Training and inference scripts
-└── README.md
+
+### Reproduce Training & Evaluation Pipeline
+```powershell
+python src/train.py
 ```
 
-## Status
+### Run ML Scoring Service in Dry-Run Mode
+```powershell
+python src/service.py --dry-run
+```
 
-> 🔧 Not yet implemented. Placeholder only.
+### Run ML Scoring Service Connected to Firebase RTDB
+```powershell
+python src/service.py --poll-interval 3 --auth-token "<FIREBASE_ID_TOKEN>"
+```

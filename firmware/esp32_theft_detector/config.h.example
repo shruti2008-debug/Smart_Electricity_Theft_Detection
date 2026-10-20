@@ -1,0 +1,59 @@
+/**
+ * config.h.example
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Smart Electricity Theft Detection — ESP32 Hardware Configuration Template
+ *
+ * COPY THIS FILE TO `config.h` in the same directory and enter your local
+ * network and Firebase parameters.
+ * NEVER commit `config.h` containing real Wi-Fi credentials to version control.
+ */
+
+#ifndef CONFIG_H
+#define CONFIG_H
+
+// ── 1. Wi-Fi Credentials ─────────────────────────────────────────────────────
+#define WIFI_SSID             "YOUR_WIFI_SSID"
+#define WIFI_PASSWORD         "YOUR_WIFI_PASSWORD"
+#define WIFI_TIMEOUT_MS       15000
+
+// ── 2. Firebase Realtime Database Configuration ──────────────────────────────
+// Singapore region database URL:
+#define FIREBASE_HOST         "https://electricity-theft-detect-cae09-default-rtdb.asia-southeast1.firebasedatabase.app"
+// Optional Database secret or Firebase Auth ID Token (if auth is enforced):
+#define FIREBASE_AUTH_KEY     ""
+
+// ── 3. Device Identification ─────────────────────────────────────────────────
+#define DEVICE_ID             "METER-001"
+#define DEVICE_NAME           "Physical Smart Energy Meter #1"
+
+// ── 4. Hardware Pin Allocations ───────────────────────────────────────────────
+// Note: Use ADC1 pins (GPIO 32 - 39) only. ADC2 cannot be used concurrently with Wi-Fi.
+#define PIN_VOLTAGE_ADC       34       // ZMPT101B Analog Output (ADC1_CH6)
+#define PIN_CURRENT_ADC       35       // ACS712 Analog Output (ADC1_CH7)
+#define PIN_RELAY_CONTROL     26       // Relay module trigger pin
+#define PIN_STATUS_LED        2        // Built-in status LED indicator
+#define PIN_I2C_SDA           21       // 16x2 I2C LCD SDA
+#define PIN_I2C_SCL           22       // 16x2 I2C LCD SCL
+
+// ── 5. Relay Trigger Logic ───────────────────────────────────────────────────
+// Most optoisolated relay modules are ACTIVE_LOW (LOW = energised, HIGH = open).
+#define RELAY_ACTIVE_LEVEL    LOW
+#define RELAY_OPEN_LEVEL      HIGH
+
+// ── 6. Sensor Calibration Constants ──────────────────────────────────────────
+#define ADC_RESOLUTION        4095.0   // ESP32 12-bit ADC
+#define ADC_REF_VOLTAGE       3.3      // 3.3V reference
+
+// ACS712 Sensitivity:
+// 0.185 V/A for 5A model, 0.100 V/A for 20A model, 0.066 V/A for 30A model
+#define ACS712_SENSITIVITY    0.066    // Volts per Ampere (ACS712-30A)
+
+// Voltage calibration multiplier for ZMPT101B (fine-tune with calibrated AC multimeter)
+#define VOLTAGE_CALIBRATION   285.0
+
+// ── 7. Timing Configuration ──────────────────────────────────────────────────
+#define TELEMETRY_INTERVAL_MS 3000     // Push to cloud every 3 seconds
+#define CONTROL_POLL_MS       5000     // Poll remote relay command every 5 seconds
+#define SAMPLES_PER_CYCLE     200      // Sampling density for RMS integration
+
+#endif // CONFIG_H
